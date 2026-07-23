@@ -1,11 +1,14 @@
 streamlit>=1.50
 paddlepaddle==2.6.2
 paddleocr==2.9.1
-opencv-python-headless==4.11.0.86
-numpy
+opencv-python-headless
+numpy<2.0
 Pillow
 httpx
 pandas
 openpyxl
 pypdfium2
 python-pptx
+scikit-learn
+shapely
+pyclipper
