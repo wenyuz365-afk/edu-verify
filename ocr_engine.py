@@ -168,45 +168,48 @@ class CertOCREngine:
 
     def _run_ocr_on_array(self, img: np.ndarray) -> list:
         """对 numpy 数组执行 OCR，返回统一格式的列表"""
-        # 如果是灰度图，转回 BGR（PaddleOCR 内部会处理）
         if len(img.shape) == 2:
             img = cv2.cvtColor(img, cv2.COLOR_GRAY2BGR)
 
-        result = self.ocr.ocr(img, cls=True)
+        # PaddleOCR v3 用 predict(), v2 用 ocr()
+        if hasattr(self.ocr, 'predict'):
+            result = list(self.ocr.predict(img))
+        else:
+            result = self.ocr.ocr(img, cls=True)
 
         lines = []
-        if result and result[0] is not None:
-            for page in result:
-                if page is None:
-                    continue
+        if not result: return lines
+
+        # PaddleOCR v3: predict() 返回对象列表，有 rec_texts/rec_scores 属性
+        for page in result:
+            if page is None: continue
+            if hasattr(page, 'rec_texts'):
+                rec_texts = page.rec_texts
+                rec_scores = page.rec_scores if hasattr(page, 'rec_scores') else [0.9]*len(rec_texts)
+                dt_polys = page.dt_polys if hasattr(page, 'dt_polys') else [[[0,0]]*4]*len(rec_texts)
+                for i, (text, score) in enumerate(zip(rec_texts, rec_scores)):
+                    boxes = dt_polys[i] if i < len(dt_polys) else [[0,0],[0,0],[0,0],[0,0]]
+                    xs = [p[0] for p in boxes]
+                    ys = [p[1] for p in boxes]
+                    lines.append({"text": text, "confidence": float(score),
+                        "center_x": sum(xs)/len(xs) if xs else 0,
+                        "center_y": sum(ys)/len(ys) if ys else 0})
+            elif isinstance(page, (list, tuple)):
+                # PaddleOCR v2 格式: [[box, (text, score)], ...]
                 for line_data in page:
                     if len(line_data) >= 2:
-                        box = line_data[0]  # [[x1,y1],[x2,y2],[x3,y3],[x4,y4]]
+                        box = line_data[0]
                         text_info = line_data[1]
-
                         if isinstance(text_info, (tuple, list)) and len(text_info) >= 2:
-                            text = text_info[0]
-                            score = float(text_info[1])
+                            text, score = text_info[0], float(text_info[1])
                         else:
-                            text = str(text_info)
-                            score = 0.5
-
-                        # 计算文字框的中心点（用于排序）
+                            text, score = str(text_info), 0.5
                         if isinstance(box, (list, np.ndarray)) and len(box) >= 4:
-                            xs = [p[0] for p in box]
-                            ys = [p[1] for p in box]
-                            center_x = sum(xs) / len(xs)
-                            center_y = sum(ys) / len(ys)
+                            xs = [p[0] for p in box]; ys = [p[1] for p in box]
+                            cx, cy = sum(xs)/len(xs), sum(ys)/len(ys)
                         else:
-                            center_x, center_y = 0, 0
-
-                        lines.append({
-                            "text": text,
-                            "confidence": score,
-                            "center_x": center_x,
-                            "center_y": center_y,
-                        })
-
+                            cx, cy = 0, 0
+                        lines.append({"text": text, "confidence": score, "center_x": cx, "center_y": cy})
         return lines
 
     def _deduplicate_results(self, results: list) -> list:
