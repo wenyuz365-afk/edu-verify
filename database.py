@@ -6,12 +6,9 @@
 """
 import sqlite3
 import random
-import hashlib
 from pathlib import Path
 from typing import Optional
-from faker import Faker
-
-fake = Faker("zh_CN")
+import json
 
 DB_PATH = Path(__file__).parent / "edu_verify.db"
 
@@ -1180,8 +1177,6 @@ def resolve_school_name(name: str) -> str:
 # 启动时初始化
 ensure_school_aliases_table()
 
-
-import json
 
 def check_duplicate_cert(cert_number: str, current_name: str = "") -> dict:
     """检查证书编号是否被多人使用"""
