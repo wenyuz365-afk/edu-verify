@@ -3,3 +3,31 @@ uploads/
 __pycache__/
 *.pyc
 .env
+
+# 个人证书图片
+*.jpg
+*.jpeg
+*.png
+
+# 临时文件
+tmp_*.txt
+check_db.py
+
+# 演示材料
+*.xlsx
+*.pptx
+*.docx
+核验材料/
+# 测试脚本
+test_*.py
+create_fake.py
+create_ppt.py
+create_ppt_flow.py
+create_report.py
+draw_flowchart.py
+export_excel.py
+fix_date.py
+init_db.py
+init_one_record.py
+populate_all_majors.py
+rebuild_db.py
