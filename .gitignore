@@ -1,0 +1,75 @@
+# Database
+*.db
+
+# Uploaded files
+uploads/
+
+# Cache
+__pycache__/
+*.pyc
+
+# Secrets
+.env
+
+# Large images
+*.jpg
+*.jpeg
+*.png
+
+# Temp files
+tmp_*.txt
+_*.jpg
+_*.txt
+_*.png
+~$*
+
+# Old scripts
+check_db.py
+create_fake.py
+create_ppt.py
+create_ppt_flow.py
+create_report.py
+draw_flowchart.py
+draw_logic_diagram.py
+draw_logic_ppt.py
+export_excel.py
+fix_date.py
+init_db.py
+init_one_record.py
+populate_all_majors.py
+rebuild_db.py
+test_*.py
+generate_docs.py
+generate_doc_final.py
+draw_backend_flow.py
+update_outline.py
+generate_ppt_v8.py
+generate_ppt_v9.py
+generate_english_resume.py
+school_majors_report.txt
+
+# Old PPTs and docs (keep only latest)
+AI学历核验系统_v*.pptx
+AI学历核验系统_完整版_v9.pptx
+AI学历核验系统_演示PPT.pptx
+AI学历核验系统_前端后端展示_v8.pptx
+技术方案_V*.docx
+技术方案_v*.docx
+方案_V*.docx
+学历核验系统演示汇报大纲*.docx
+学历核验系统_技术方案*.docx
+学历AI核验系统_演示报告*.pptx
+学历核验系统流程图*.pptx
+逻辑传导图.pptx
+院校专业数据全集.xlsx
+
+# Test materials
+核验材料/
+提交/
+
+# Demo launchers
+启动演示.bat
+启动.vbs
+
+# npy
+*.npy
