@@ -8,3 +8,5 @@ httpx
 pandas
 openpyxl
 pypdfium2
+shapely
+pyclipper
